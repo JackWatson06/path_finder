@@ -2,7 +2,6 @@
 * This file implements the core code for our physics object which we apply to our game entities to give them
 * the ability to interact with the world.
 */
-
 #include "headers/ObjectPhysics.h"
 
 using namespace Simplex;

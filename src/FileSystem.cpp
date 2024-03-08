@@ -2,7 +2,6 @@
 * This file implements methods found in the FileSyste.h header which pertains to interactions with the systems
 * underlying file system.
 */
-
 #include "headers/FileSystem.h"
 
 using namespace Simplex;

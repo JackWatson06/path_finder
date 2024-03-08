@@ -1,8 +1,8 @@
 /*
 * Define a rigid body which enables collision checking amongst different entities in the game world.
 */
-
 #include "headers/ObjectRigidBody.h"
+
 using namespace Simplex;
 
 #pragma region Constructors / Destructors

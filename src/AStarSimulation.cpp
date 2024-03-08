@@ -2,7 +2,6 @@
 * Implementation of the A Star algorithm to handle path finding between two entities. This file also contains
 * the code to manage the simulation and make an interesting game state.
 */
-
 #include "headers/AStarSimulation.h"
 
 #pragma region Public Methods

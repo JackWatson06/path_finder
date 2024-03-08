@@ -1,7 +1,6 @@
 /*
 * Handle movement of the camera through a first person view or the arcball.
 */
-
 # include "headers/Application.h"
 
 using namespace Simplex;

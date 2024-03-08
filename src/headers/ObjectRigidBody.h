@@ -2,7 +2,6 @@
 * Declare a rigid body which handles the bounding box of a entity. We use this mainly for checking collisions with other
 * entities in the game scene.
 */
-
 #pragma once
 
 #include "Simplex\Mesh\Model.h"

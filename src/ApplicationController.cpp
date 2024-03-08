@@ -2,7 +2,6 @@
 * This file implements several of the methods needed to handle input into our application. Our application allows
 * for mouse control, keyboard control, and use of a gamepad.
 */
-
 #include "headers/Application.h"
 
 using namespace Simplex;

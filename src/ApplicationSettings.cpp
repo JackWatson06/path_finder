@@ -2,7 +2,6 @@
 * This file implements several different functions that handle loading options from an init file into the application.
 * Upon ending the simulation we will save the current configuration to the file system.
 */
-
 #include "headers/Application.h"
 
 using namespace Simplex;

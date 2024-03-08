@@ -1,7 +1,6 @@
 /*
 * Implementation of our Tile class which helps model a board for the A Star algorithm to follow.
 */
-
 #include "headers/Tile.h"
 
 #pragma region Constructors / Destructors

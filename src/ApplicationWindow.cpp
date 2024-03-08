@@ -2,7 +2,6 @@
 * This file implements methods we need to interact with the SFML window. Specifically it handles creation and destruction
 * of the window.
 */
-
 #include "headers/Application.h"
 
 using namespace Simplex;

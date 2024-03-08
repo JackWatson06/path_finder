@@ -1,7 +1,6 @@
 /*
 * Setup the controller mappings between various controller vendors and the keys that they map to in our application.
 */
-
 #include "headers/ControllerConfiguration.h"
 #include "SFML/Window.hpp"
 

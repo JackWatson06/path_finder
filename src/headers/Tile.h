@@ -1,8 +1,8 @@
 /*
 * Model a tile which is one block in our game world. We use this for our A Star algorithm as each 'Node'
 */
-
 #pragma once
+
 # include "GameEntityManager.h"
 
 namespace Simplex
