@@ -1,89 +1,44 @@
-#ifndef STUDENT_H
-#define STUDENT_H
+/*
+* Model a tile which is one block in our game world. We use this for our A Star algorithm as each 'Node'
+*/
 
-# include "MyEntityManager.h"
+#pragma once
+# include "GameEntityManager.h"
 
 namespace Simplex
 {
-    class Tile {
+    class Tile 
+    {
+        private: 
+        #pragma region Game State Data
+            GameEntityManager* game_entity_manager;
+            String entity_id;
+            vector3 position;
+            int map_index_location;
+            bool active;
+        #pragma endregion
 
-
-        protected: 
-
-            MyEntityManager* m_entityManager; // Get a referance to the Entity Manager so we can just pull out the entity in this class.
-
-            String m_entityId; // Store the entity id associated with this tile.
-            vector3 m_position; // Store the posiiton of the tile in world coords
-            int m_mapIndex; // Store the index in which this tile is on the map array.
-            bool m_active; // Store weather or not this tile should be active.
-
-
-            // Varaibles which are used for calculating the best path.
-            // These arguably could go in a seperate cell associated class, but I think their fine here for this assignment.
-            Tile* m_parent; // Store the parent for A star (Used for path finding ability)
-            float m_g; // G value associated with A Star
-            float m_h; // H value associated with A Star
-            float m_f; // F value associated with A Star
+        #pragma region A Star Data
+            Tile* a_star_parent;
+            float a_star_g_value;
+            float a_star_h_value;
+            float a_star_f_value;
+        #pragma endregion
 
         public: 
-
-            /*
-            Usage: Default Constructor
-            Arguments: ---
-            Output: ---
-            */
+        #pragma region Constructors / Destructors
             Tile();
-            /*
-            Usage: Constructor
-            Arguments: Entity associated with tile, position of tile, index of tile in map
-            Output: ---
-            */
             Tile(String entityId, vector3 position, int index);
-            /*
-            Usage: Copy Constructor
-            Arguments: Other tile
-            Output: ---
-            */
 			Tile(Tile const& other);
-            /*
-            Usage: = Operator
-            Arguments: Set tile equal to this one
-            Output: ---
-            */
 			Tile& operator=(Tile const& other);
-            /*
-            Usage: Destructor
-            Arguments: ---
-            Output: ---
-            */
 			~Tile(void);
-            /*
-            Usage: Swap variables
-            Arguments: Other Tile to swap
-            Output: ---
-            */
-            void Swap(Tile& other);
-            /*
-            Usage: Initialize varaibles
-            Arguments: ---
-            Output: ---
-            */
-            void Init();
-            /*
-            Usage: Release objects memoery
-            Arguments: ---
-            Output: ---
-            */
             void Release(void);
-            /*
-            Usage: Reset this objects to a default state
-            Arguments: ---
-            Output: ---
-            */
+            void Init();
+            void Swap(Tile& other);
             void ResetCell(void);
+        #pragma endregion
             
-
-            // Getters for the tile class.
+        #pragma region Getters
             float GetF(void);
             float GetG(void);
             float GetH(void);
@@ -92,17 +47,14 @@ namespace Simplex
             String GetEntityId(void);
             Tile* GetParent(void);
             vector3 GetPosition(void);
+        #pragma endregion
 
-            // Setters for the tile class.
+        #pragma region Setters
             void EnableObstacle(void);
             void RemoveObstacle(void);
             void SetH(float value);
             void SetG(float value);
             void SetParent(Tile* value);
-
-
-
+        #pragma endregion
     };
 }
-
-#endif

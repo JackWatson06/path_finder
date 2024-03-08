@@ -1,52 +1,31 @@
-#include "Tile.h"
+/*
+* Implementation of our Tile class which helps model a board for the A Star algorithm to follow.
+*/
 
+#include "headers/Tile.h"
 
-
-/// <summary>
-/// Default Constructor
-/// </summary>
+#pragma region Constructors / Destructors
 Simplex::Tile::Tile() { Init(); }
-
-
-
-/// <summary>
-/// Constructor
-/// </summary>
-/// <param name="entityId">Entity associated with tile</param>
-/// <param name="position">Position of tile</param>
-/// <param name="index">Index of tile in world map</param>
 Simplex::Tile::Tile(String entityId, vector3 position, int index) { 
 	Init(); 
-	m_entityId = entityId;
-	m_position = position;
-	m_mapIndex = index;
+	entity_id = entityId;
+	position = position;
+	map_index_location = index;
 }
 
-
-
-/// <summary>
-/// Copy asignment
-/// </summary>
-/// <param name="other"></param>
 Simplex::Tile::Tile(Tile const& other)
 {
-	m_entityManager = MyEntityManager::GetInstance();
-	m_entityId = other.m_entityId;
-	m_active = other.m_active;
-	m_position = other.m_position;
-	m_parent = other.m_parent;
-	m_mapIndex = other.m_mapIndex;
-	m_g = other.m_g;
-	m_h = other.m_h;
-	m_f = other.m_f;
+	game_entity_manager = GameEntityManager::GetInstance();
+	entity_id = other.entity_id;
+	active = other.active;
+	position = other.position;
+	a_star_parent = other.a_star_parent;
+	map_index_location = other.map_index_location;
+	a_star_g_value = other.a_star_g_value;
+	a_star_h_value = other.a_star_h_value;
+	a_star_f_value = other.a_star_f_value;
 }
 
-
-/// <summary>
-/// = sign operator
-/// </summary>
-/// <param name="other">Other tile</param>
-/// <returns></returns>
 Simplex::Tile& Simplex::Tile::operator=(Tile const& other)
 {
 	if (this != &other)
@@ -59,88 +38,63 @@ Simplex::Tile& Simplex::Tile::operator=(Tile const& other)
 	return *this;
 }
 
-
-/// <summary>
-/// Destructor
-/// </summary>
-/// <param name=""></param>
 Simplex::Tile::~Tile(void) { Release(); }
 
+void Simplex::Tile::Release() { }
 
-
-
-/// <summary>
-/// Swap out the variables when passing in another tile.
-/// </summary>
-/// <param name="other"></param>
-void Simplex::Tile::Swap(Tile& other)
-{
-	std::swap(m_entityManager, other.m_entityManager);
-	std::swap(m_entityId, other.m_entityId);
-	std::swap(m_active, other.m_active);
-	std::swap(m_position, other.m_position);
-	std::swap(m_parent, other.m_parent);
-	std::swap(m_mapIndex, other.m_mapIndex);
-	std::swap(m_g, other.m_g);
-	std::swap(m_h, other.m_h);
-	std::swap(m_f, other.m_f);
-}
-
-
-
-/// <summary>
-/// Initialize class member variables
-/// </summary>
 void Simplex::Tile::Init()
 {
-	m_entityManager = MyEntityManager::GetInstance();
+	game_entity_manager = GameEntityManager::GetInstance();
 
-	m_parent = nullptr;
-	m_active = true;
-	m_entityId = "None";
-	m_mapIndex = 0;
-	m_position = vector3();
+	a_star_parent = nullptr;
+	active = true;
+	entity_id = "None";
+	map_index_location = 0;
+	position = vector3();
 
-	m_h = 0;
-	m_g = 0;
-	m_f = 0;
+	a_star_h_value = 0;
+	a_star_g_value = 0;
+	a_star_f_value = 0;
+}
+
+void Simplex::Tile::Swap(Tile& other)
+{
+	std::swap(game_entity_manager, other.game_entity_manager);
+	std::swap(entity_id, other.entity_id);
+	std::swap(active, other.active);
+	std::swap(position, other.position);
+	std::swap(a_star_parent, other.a_star_parent);
+	std::swap(map_index_location, other.map_index_location);
+	std::swap(a_star_g_value, other.a_star_g_value);
+	std::swap(a_star_h_value, other.a_star_h_value);
+	std::swap(a_star_f_value, other.a_star_f_value);
 }
 
 
-
-/// <summary>
-/// Release all the tiles memory (nothing to be release. All on stack)
-/// </summary>
-void Simplex::Tile::Release(){ }
-
-
-
-/// <summary>
-/// Reset the cell to it's default values.
-/// </summary>
 void Simplex::Tile::ResetCell()
 {
-	m_parent = nullptr;
-	m_h = 0;
-	m_g = 0;
-	m_f = 0;
+	a_star_parent = nullptr;
+	a_star_h_value = 0;
+	a_star_g_value = 0;
+	a_star_f_value = 0;
 }
+#pragma endregion
 
+#pragma region Getters
+bool Simplex::Tile::GetActive(void) { return active; }
+float Simplex::Tile::GetF(void) { return GetG() + a_star_h_value; }
+float Simplex::Tile::GetG(void) { return a_star_g_value; }
+float Simplex::Tile::GetH(void) { return a_star_h_value; }
+int Simplex::Tile::GetIndex(void) { return map_index_location; }
+Simplex::String Simplex::Tile::GetEntityId(void) { return entity_id; }
+Simplex::vector3 Simplex::Tile::GetPosition(void) { return position + vector3(0.5, 0.0, 0.5); } // Add on to get center.
+Simplex::Tile* Simplex::Tile::GetParent(void) { return a_star_parent; }
+#pragma endregion
 
-
-// Getters for class member variables.
-bool Simplex::Tile::GetActive(void) { return m_active; }
-float Simplex::Tile::GetF(void) { return GetG() + m_h; }
-float Simplex::Tile::GetG(void) { return m_g; }
-float Simplex::Tile::GetH(void) { return m_h; }
-int Simplex::Tile::GetIndex(void) { return m_mapIndex; }
-Simplex::String Simplex::Tile::GetEntityId(void) { return m_entityId; }
-Simplex::vector3 Simplex::Tile::GetPosition(void) { return m_position + vector3(0.5, 0.0, 0.5); } // Add on to get center.
-Simplex::Tile* Simplex::Tile::GetParent(void) { return m_parent; }
-
-/// Setters for the tiles variables
-void Simplex::Tile::EnableObstacle(void) { m_active = false; }
-void Simplex::Tile::RemoveObstacle(void) { m_active = true; }
-void Simplex::Tile::SetH(float value) { m_h = value; }
-void Simplex::Tile::SetG(float value) { m_g = m_parent->GetG() + value; } // G is the value + the parents.
-void Simplex::Tile::SetParent(Tile* value) { if (!m_parent) m_parent = value; }
+#pragma region Setters
+void Simplex::Tile::EnableObstacle(void) { active = false; }
+void Simplex::Tile::RemoveObstacle(void) { active = true; }
+void Simplex::Tile::SetH(float value) { a_star_h_value = value; }
+void Simplex::Tile::SetG(float value) { a_star_g_value = a_star_parent->GetG() + value; } // G is the value + the parents.
+void Simplex::Tile::SetParent(Tile* value) { if (!a_star_parent) a_star_parent = value; }
+#pragma endregion

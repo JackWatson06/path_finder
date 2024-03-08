@@ -1,24 +1,63 @@
-#include "AppClass.h"
+/*
+* Implement the application GUI code. Most of this code comes from the OpenGL interop with IMGUI found here:
+* https://github.com/NVIDIA/OptiX_Apps/blob/master/apps/intro_denoiser/imgui/imgui_impl_glfw_gl3.cpp
+*/
+#include "headers/Application.h"
+#include "imgui/imgui.h"
+
 using namespace Simplex;
 ImGuiObject Application::gui;
+
+void Application::InitIMGUI(void)
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	// Map SFML events enums to key in ImgGUI.
+	io.KeyMap[ImGuiKey_Tab] = sf::Keyboard::Tab;
+	io.KeyMap[ImGuiKey_LeftArrow] = sf::Keyboard::Left;
+	io.KeyMap[ImGuiKey_RightArrow] = sf::Keyboard::Right;
+	io.KeyMap[ImGuiKey_UpArrow] = sf::Keyboard::Up;
+	io.KeyMap[ImGuiKey_DownArrow] = sf::Keyboard::Down;
+	io.KeyMap[ImGuiKey_PageUp] = sf::Keyboard::PageUp;
+	io.KeyMap[ImGuiKey_PageDown] = sf::Keyboard::PageDown;
+	io.KeyMap[ImGuiKey_Home] = sf::Keyboard::Home;
+	io.KeyMap[ImGuiKey_End] = sf::Keyboard::End;
+	io.KeyMap[ImGuiKey_Delete] = sf::Keyboard::Delete;
+	io.KeyMap[ImGuiKey_Backspace] = sf::Keyboard::BackSpace;
+	io.KeyMap[ImGuiKey_Enter] = sf::Keyboard::Return;
+	io.KeyMap[ImGuiKey_Escape] = sf::Keyboard::Escape;
+	io.KeyMap[ImGuiKey_A] = sf::Keyboard::A;
+	io.KeyMap[ImGuiKey_C] = sf::Keyboard::C;
+	io.KeyMap[ImGuiKey_V] = sf::Keyboard::V;
+	io.KeyMap[ImGuiKey_X] = sf::Keyboard::X;
+	io.KeyMap[ImGuiKey_Y] = sf::Keyboard::Y;
+	io.KeyMap[ImGuiKey_Z] = sf::Keyboard::Z;
+
+	// We are using the alternative draw lists found in the RenderDrawLists function. 
+	// Since we are using the alternative call ImGui::GetDrawData() after ImGui::Render() to get the same 
+	// ImDrawData pointer.
+	io.RenderDrawListsFn = NULL;
+	io.SetClipboardTextFn = NULL;
+	io.GetClipboardTextFn = NULL;
+	io.ClipboardUserData = sfml_window;
+	io.ImeWindowHandle = sfml_window->getSystemHandle();
+
+	gui.clock = system->GenClock();
+}
+
 void Application::DrawGUI(void)
 {
 #pragma region Debugging Information
-	//Print info on the screen
 	uint nEmptyLines = 20;
-	for (uint i = 0; i < nEmptyLines; ++i)
-		m_pMeshMngr->PrintLine("");//Add a line on top
-	//m_pMeshMngr->Print("						");
-	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), C_YELLOW);
-	//m_pMeshMngr->Print("						");
+	for (uint i = 0; i < nEmptyLines; ++i) {
+		mesh_manager->PrintLine("");
+	}
 
-	//m_pMeshMngr->Print("						");
-	m_pMeshMngr->Print("RenderCalls: ");//Add a line on top
-	m_pMeshMngr->PrintLine(std::to_string(m_uRenderCallCount), C_YELLOW);
-
-	//m_pMeshMngr->Print("						");
-	m_pMeshMngr->Print("FPS:");
-	m_pMeshMngr->PrintLine(std::to_string(m_pSystem->GetFPS()), C_RED);
+	mesh_manager->PrintLine(system->GetAppName(), C_YELLOW);
+	mesh_manager->Print("RenderCalls: ");//Add a line on top
+	mesh_manager->PrintLine(std::to_string(render_call_per_frame_count), C_YELLOW);
+	mesh_manager->Print("FPS:");
+	mesh_manager->PrintLine(std::to_string(system->GetFPS()), C_RED);
 #pragma endregion
 
 	//Calculate the window size to know how to draw
@@ -26,16 +65,16 @@ void Application::DrawGUI(void)
 
 	static ImVec4 v4Color = ImColor(255, 0, 0);
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar;
+
 	//Main Window
-	if (m_bGUI_Main)
-	{
+	if (show_GUI_main_window) {
 		ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiSetCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(340, 60), ImGuiSetCond_FirstUseEver);
-		String sAbout = m_pSystem->GetAppName() + " - About";
+
+		String sAbout = system->GetAppName() + " - About";
+
 		ImGui::Begin(sAbout.c_str(), (bool*)0, window_flags);
 		{
-			ImGui::Text("Programmer: \n");
-			ImGui::TextColored(v4Color, m_sProgrammer.c_str());
 			ImGui::Text("FrameRate: %.2f [FPS] -> %.3f [ms/frame]\n",
 				ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 			ImGui::Separator();
@@ -48,7 +87,7 @@ void Application::DrawGUI(void)
 			ImGui::Separator();
 			ImGui::Text("Arrows: Apply force to Steve\n");
 			ImGui::Text("+/-: Add / remove holes\n");
-			ImGui::Text("Hole Counter: %i/%i\n", m_pMyAStar->GetCurrentHidden(), m_pMyAStar->GetTotalObstacleCount());
+			ImGui::Text("Hole Counter: %i/%i\n", a_star_simulation->GetCurrentHidden(), a_star_simulation->GetTotalObstacleCount());
 		}
 		ImGui::End();
 	}
@@ -59,6 +98,8 @@ void Application::DrawGUI(void)
 	ImDrawData* pData = ImGui::GetDrawData();
 	RenderDrawLists(pData);
 }
+
+// https://github.com/NVIDIA/OptiX_Apps/blob/master/apps/intro_denoiser/imgui/imgui_impl_glfw_gl3.cpp
 void Application::RenderDrawLists(ImDrawData* draw_data)
 {
 	// Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
@@ -156,13 +197,16 @@ void Application::RenderDrawLists(ImDrawData* draw_data)
 	glViewport(last_viewport[0], last_viewport[1], (GLsizei)last_viewport[2], (GLsizei)last_viewport[3]);
 	glScissor(last_scissor_box[0], last_scissor_box[1], (GLsizei)last_scissor_box[2], (GLsizei)last_scissor_box[3]);
 }
+
+// https://github.com/NVIDIA/OptiX_Apps/blob/master/apps/intro_denoiser/imgui/imgui_impl_glfw_gl3.cpp
 bool Application::CreateFontsTexture()
 {
 	// Build texture atlas
 	ImGuiIO& io = ImGui::GetIO();
 	unsigned char* pixels;
 	int width, height;
-	io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bits (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
+	io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   
+	// Load as RGBA 32-bits (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
 
 	// Upload texture to graphics system
 	GLint last_texture;
@@ -181,6 +225,8 @@ bool Application::CreateFontsTexture()
 
 	return true;
 }
+
+// https://github.com/NVIDIA/OptiX_Apps/blob/master/apps/intro_denoiser/imgui/imgui_impl_glfw_gl3.cpp
 bool Application::CreateDeviceObjects()
 {
 	// Backup GL state
@@ -265,8 +311,8 @@ void Application::NewFrame()
 	ImGuiIO& io = ImGui::GetIO();
 
 	// Setup display size (every frame to accommodate for window resizing)
-	float width = static_cast<float>(m_pSystem->GetWindowWidth());
-	float height = static_cast<float>(m_pSystem->GetWindowHeight());
+	float width = static_cast<float>(system->GetWindowWidth());
+	float height = static_cast<float>(system->GetWindowHeight());
 	io.DisplaySize = ImVec2(width, height);
 	GLint m_viewport[4];
 	glGetIntegerv(GL_VIEWPORT, m_viewport);
@@ -277,49 +323,13 @@ void Application::NewFrame()
 	height > 0 ? ((float)m_viewport[3] / height) : 0);
 	*/
 	// Setup time step
-	float fDelta = m_pSystem->GetDeltaTime(gui.m_nClock);
+	float fDelta = system->GetDeltaTime(gui.clock);
 	io.DeltaTime = fDelta;
 	gui.m_dTimeTotal += fDelta;
 
 
 	// Start the frame
 	ImGui::NewFrame();
-}
-void Application::InitIMGUI(void)
-{
-	ImGuiIO& io = ImGui::GetIO();
-
-	// Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array that we will update during the application lifetime.
-	io.KeyMap[ImGuiKey_Tab] = sf::Keyboard::Tab;
-	io.KeyMap[ImGuiKey_LeftArrow] = sf::Keyboard::Left;
-	io.KeyMap[ImGuiKey_RightArrow] = sf::Keyboard::Right;
-	io.KeyMap[ImGuiKey_UpArrow] = sf::Keyboard::Up;
-	io.KeyMap[ImGuiKey_DownArrow] = sf::Keyboard::Down;
-	io.KeyMap[ImGuiKey_PageUp] = sf::Keyboard::PageUp;
-	io.KeyMap[ImGuiKey_PageDown] = sf::Keyboard::PageDown;
-	io.KeyMap[ImGuiKey_Home] = sf::Keyboard::Home;
-	io.KeyMap[ImGuiKey_End] = sf::Keyboard::End;
-	io.KeyMap[ImGuiKey_Delete] = sf::Keyboard::Delete;
-	io.KeyMap[ImGuiKey_Backspace] = sf::Keyboard::BackSpace;
-	io.KeyMap[ImGuiKey_Enter] = sf::Keyboard::Return;
-	io.KeyMap[ImGuiKey_Escape] = sf::Keyboard::Escape;
-	io.KeyMap[ImGuiKey_A] = sf::Keyboard::A;
-	io.KeyMap[ImGuiKey_C] = sf::Keyboard::C;
-	io.KeyMap[ImGuiKey_V] = sf::Keyboard::V;
-	io.KeyMap[ImGuiKey_X] = sf::Keyboard::X;
-	io.KeyMap[ImGuiKey_Y] = sf::Keyboard::Y;
-	io.KeyMap[ImGuiKey_Z] = sf::Keyboard::Z;
-
-	// We are using the alternative; set this to NULL and call ImGui::GetDrawData() after ImGui::Render() to get the same ImDrawData pointer.
-	io.RenderDrawListsFn = NULL; // = RenderDrawListsFunction;
-	io.SetClipboardTextFn = NULL;
-	io.GetClipboardTextFn = NULL;
-	//io.ClipboardUserData = NULL;
-	io.ClipboardUserData = m_pWindow;
-	io.ImeWindowHandle = m_pWindow->getSystemHandle();
-
-	//Setup clock
-	gui.m_nClock = m_pSystem->GenClock();
 }
 void Application::ShutdownGUI(void)
 {
