@@ -1,13 +1,8 @@
-/*----------------------------------------------
-Programmer: Alberto Bobadilla (labigm@gmail.com)
-Date: 2017/05
-----------------------------------------------*/
-#ifndef __CONTROLLERCONFIG_H_
-#define __CONTROLLERCONFIG_H_
-
-#include "SFML\Window.hpp"
-#include "SFML\Graphics.hpp"
-#include "SFML\OpenGL.hpp"
+/*
+* Define controller enums and a generic controller interface which encapsulates multiple different
+* controller shemes.
+*/
+#pragma once
 
 enum ControllerKey_
 {
@@ -27,6 +22,7 @@ enum ControllerKey_
 	SimplexKey_G0 = 13,
 	SimplexKey_G1 = 14,
 };
+
 enum ControllerAxis_
 {
 	SimplexAxis_X = 0,
@@ -38,6 +34,7 @@ enum ControllerAxis_
 	SimplexAxis_POVX = 6,
 	SimplexAxis_POVY = 7,
 };
+
 enum ControllerModel_
 {
 	/*
@@ -78,6 +75,7 @@ enum Vendor_
 	V8BITDO = 11720,
 	VGENERIC = 121,
 };
+
 struct ControllerInput
 {
 	unsigned int uModel = 1000;
@@ -89,16 +87,7 @@ struct ControllerInput
 
 	ControllerInput(unsigned int nVendorID = 0, unsigned int nProductID = 0);
 
-private:
-	ControllerInput(ControllerInput const& other);
-	ControllerInput& operator=(ControllerInput const& input);
-
+	private:
+		ControllerInput(ControllerInput const& other);
+		ControllerInput& operator=(ControllerInput const& input);
 };
-
-#endif // __CONTROLLERCONFIG_H_
-
-/*
-USAGE:
-ARGUMENTS: ---
-OUTPUT: ---
-*/
