@@ -1,7 +1,8 @@
 # path_finder
 Pathfinding demonstration utilizing the A* algorithm in an OpenGL-rendered environment. Watch Steve from Minecraft get chased by a Creeper until the Creeper blows up!
 
-## Screenshots
+## Screenshot
+![Creeper chasing a very concerned Steve.](https://jackwatson06.github.io/path_finder/240313_Minecraft_AStar_Screenshot.png)
 
 ## Technical Details
 The project consists entirely of C++ code (besides a few shaders). It leans on the OpenGL library to render the simulation state to the screen. Several libraries (see **Dependencies**) were utilized to create windows, GUI menus, and handle input. Overall, it demonstrates a mixture of graphical programming alongside game development. The project only works for Windows-based operating systems.
