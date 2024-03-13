@@ -45,7 +45,7 @@ We ran into an issue when loading embedded _images_ using a string to identify a
 
 ## Dependencies
 - Simplex (authored by RIT professor Alberto Bobadilla ALL credit goes to him).
-- BasicX (maybe can get rid of)
+- BasicX (authored by RIT professor Alberto Bobadilla ALL credit goes to him).
 - [FreeImage](https://freeimage.sourceforge.io/)
 - [GLEW](https://www.opengl.org/sdk/libs/GLEW/)
 - [GLUT](https://www.opengl.org/resources/libraries/glut/glut_downloads.php)
