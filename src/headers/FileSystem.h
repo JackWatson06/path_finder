@@ -13,6 +13,8 @@ namespace Simplex {
 		private:
 			static FileSystem* instance;
 
+			FileSystem();
+			void Init();
 		public:
 			static FileSystem* GetInstance();
 			static void ReleaseInstance();

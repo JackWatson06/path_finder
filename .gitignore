@@ -333,4 +333,6 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-dependencies/
+# Build directories
+build/
+build_obj/

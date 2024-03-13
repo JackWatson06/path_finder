@@ -42,7 +42,7 @@ void Application::InitIMGUI(void)
 	io.ClipboardUserData = sfml_window;
 	io.ImeWindowHandle = sfml_window->getSystemHandle();
 
-	gui.clock = system->GenClock();
+	gui.m_nClock = system->GenClock();
 }
 
 void Application::DrawGUI(void)
@@ -317,13 +317,9 @@ void Application::NewFrame()
 	GLint m_viewport[4];
 	glGetIntegerv(GL_VIEWPORT, m_viewport);
 	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-	/*
-	io.DisplayFramebufferScale =
-	ImVec2(	width > 0 ? ((float)m_viewport[2] / width) : 0,
-	height > 0 ? ((float)m_viewport[3] / height) : 0);
-	*/
+
 	// Setup time step
-	float fDelta = system->GetDeltaTime(gui.clock);
+	float fDelta = system->GetDeltaTime(gui.m_nClock);
 	io.DeltaTime = fDelta;
 	gui.m_dTimeTotal += fDelta;
 

@@ -3,6 +3,7 @@
 * running the A Star simulation.
 */
 #include "./headers/Application.h"
+#include "./Simplex/System/Folder.h"
 
 using namespace Simplex;
 

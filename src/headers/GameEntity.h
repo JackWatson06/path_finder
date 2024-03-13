@@ -67,7 +67,7 @@ namespace Simplex
 			void SortDimensions(void);
 			bool IsColliding(GameEntity* const other);
 			void ResolveCollision(GameEntity* a_pOther);
-			ObjectRigidBody::PRigidBody* GetColliderArray(void);
+			ObjectRigidBody** GetColliderArray(void);
 			uint GetCollidingCount(void);
 			void ClearCollisionList(void);
 		#pragma endregion

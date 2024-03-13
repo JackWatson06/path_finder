@@ -383,17 +383,17 @@ void Simplex::GameEntityManager::SetMass(float mass, uint entity_index)
 	return;
 }
 
-void Simplex::GameEntityManager::UsePhysics(bool a_bUse, String entity_id)
+void Simplex::GameEntityManager::UsePhysics(bool use_physics, String entity_id)
 {
 	GameEntity* pTemp = GameEntity::GetEntity(entity_id);
 
 	if (pTemp) {
-		pTemp->UsePhysics(a_bUse);
+		pTemp->UsePhysics(use_physics);
 	}
 	return;
 }
 
-void Simplex::GameEntityManager::UsePhysics(bool a_bUse, uint entity_index)
+void Simplex::GameEntityManager::UsePhysics(bool use_physics, uint entity_index)
 {
 	if (entity_count == 0) {
 		return;
@@ -403,7 +403,7 @@ void Simplex::GameEntityManager::UsePhysics(bool a_bUse, uint entity_index)
 		entity_index = entity_count - 1;
 	}
 
-	return entities[entity_index]->UsePhysics(a_bUse);
+	return entities[entity_index]->UsePhysics(use_physics);
 }
 #pragma endregion
 

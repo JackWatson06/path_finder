@@ -22,21 +22,21 @@ void Application::ProcessMousePressed(sf::Event sfml_event)
 	switch (sfml_event.mouseButton.button)
 	{
 		case sf::Mouse::Button::Left:
-			gui.mouse_input[0] = true;
+			gui.m_bMousePressed[0] = true;
 			break;
 		case sf::Mouse::Button::Middle:
-			gui.mouse_input[1] = true;
+			gui.m_bMousePressed[1] = true;
 			is_arc_ball_toggled = true;
 			break;
 		case sf::Mouse::Button::Right:
-			gui.mouse_input[2] = true;
+			gui.m_bMousePressed[2] = true;
 			is_first_person_camera_toggled = true;
 			break;
 		default: break;
 	}
 
 	for (int i = 0; i < 3; i++) {
-		gui.io.MouseDown[i] = gui.mouse_input[i];
+		gui.io.MouseDown[i] = gui.m_bMousePressed[i];
 	}
 }
 
@@ -45,21 +45,21 @@ void Application::ProcessMouseReleased(sf::Event sfml_event)
 	switch (sfml_event.mouseButton.button)
 	{
 		case sf::Mouse::Button::Left:
-			gui.mouse_input[0] = false;
+			gui.m_bMousePressed[0] = false;
 			break;
 		case sf::Mouse::Button::Middle:
-			gui.mouse_input[1] = false;
+			gui.m_bMousePressed[1] = false;
 			is_arc_ball_toggled = false;
 			break;
 		case sf::Mouse::Button::Right:
-			gui.mouse_input[2] = false;
+			gui.m_bMousePressed[2] = false;
 			is_first_person_camera_toggled = false;
 			break;
 		default: break;
 	}
 
 	for (int i = 0; i < 3; i++) {
-		gui.io.MouseDown[i] = gui.mouse_input[i];
+		gui.io.MouseDown[i] = gui.m_bMousePressed[i];
 	}
 }
 

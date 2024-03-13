@@ -32,7 +32,7 @@ void Application::InitWindow(String window_name)
 		));
 	sfml_window->setVerticalSyncEnabled(true);
 	sfml_window->setFramerateLimit(system->GetMaxFrameRate());
-	sf::Image icon = file_system->LoadImageFromResource("iconPNG");
+	sf::Image icon = file_system->LoadImageFromResource("minecraft");
 	sfml_window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 	// Initialize GLEW

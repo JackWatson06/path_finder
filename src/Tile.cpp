@@ -5,10 +5,10 @@
 
 #pragma region Constructors / Destructors
 Simplex::Tile::Tile() { Init(); }
-Simplex::Tile::Tile(String entityId, vector3 position, int index) { 
+Simplex::Tile::Tile(String entityId, vector3 entityPosition, int index) { 
 	Init(); 
 	entity_id = entityId;
-	position = position;
+	position = entityPosition;
 	map_index_location = index;
 }
 

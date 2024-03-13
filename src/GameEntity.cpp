@@ -257,7 +257,7 @@ void Simplex::GameEntity::ResolveCollision(GameEntity* other_entity)
 	}
 }
 
-Simplex::ObjectRigidBody::PRigidBody* Simplex::GameEntity::GetColliderArray(void) { return rigid_body->GetColliderArray(); }
+Simplex::ObjectRigidBody** Simplex::GameEntity::GetColliderArray(void) { return rigid_body->GetColliderArray(); }
 uint Simplex::GameEntity::GetCollidingCount(void) { return rigid_body->GetCollidingCount(); }
 
 void Simplex::GameEntity::ClearCollisionList(void)
@@ -276,8 +276,9 @@ void Simplex::GameEntity::SetPosition(vector3 position) { if (physics) physics->
 
 Simplex::vector3 Simplex::GameEntity::GetPosition(void)
 {
-	if (physics != nullptr)
+	if (physics != nullptr) {
 		return physics->GetPosition();
+	}
 	return vector3();
 }
 

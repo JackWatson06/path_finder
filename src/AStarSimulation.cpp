@@ -127,12 +127,12 @@ Simplex::AStarSimulation::AStarSimulation(int width, int height) {
 	map_area = width * height;
 	tile_list = new Tile[map_area];
 
-	allowed_hidden_tiles = (width * height) * 0.25f;
+	allowed_hidden_tiles = (int)((width * height) * 0.25f);
 
 	std::srand(std::time(nullptr));
 
 	// Generate the map tiles.
-	for (uint i = 0; i < width * height; i++)
+	for (int i = 0; i < width * height; i++)
 	{
 		float x = (float)((int)(i / width));
 		float z = i % height;
@@ -142,21 +142,21 @@ Simplex::AStarSimulation::AStarSimulation(int width, int height) {
 
 
 		Tile tile(entityId, tilePosition, i);
-		tile_list[i] = tile; // <= Don't know why that is yelling at me (for me it is underlined green)
+		tile_list[i] = tile;
 
 
-		CreateEntity("Minecraft\\Cube.obj", entityId, tilePosition);
+		CreateEntity("Cube.obj", entityId, tilePosition);
 		game_entity_manager->DisableRigidBody(entityId);
 
 	}
 
 	// Create the creeper which will act as the finder.
-	CreateEntity("Minecraft\\Creeper.obj", "Creeper", RandomFreeTile()->GetPosition());
+	CreateEntity("Creeper.obj", "Creeper", RandomFreeTile()->GetPosition());
 	game_entity_manager->UsePhysics();
 	finder = game_entity_manager->GetEntity();
 
 	// Create Steve which will act as the target
-	CreateEntity("Minecraft\\Steve.obj", "Steve", RandomFreeTile()->GetPosition());
+	CreateEntity("Steve.obj", "Steve", RandomFreeTile()->GetPosition());
 	game_entity_manager->UsePhysics();
 	target = game_entity_manager->GetEntity();
 	

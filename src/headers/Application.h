@@ -5,9 +5,9 @@
 
 #include "./ControllerConfiguration.h"
 #include "./FileSystem.h"
-#include "./ImGuiObject.h"
 #include "./GameEntityManager.h"
 #include "./AStarSimulation.h"
+#include "./ImGuiObject.h"
 
 #include "Simplex\Simplex.h"
 #include "SFML\Window.hpp"
